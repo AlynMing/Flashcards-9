@@ -67,6 +67,7 @@ class ViewController: UIViewController {
 
     }
     
+    
     @IBAction func didToggle(_ sender: UISwitch) {
         if sender.isOn {
             cardHidden = true
