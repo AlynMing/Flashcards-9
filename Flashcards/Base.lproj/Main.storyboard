@@ -107,7 +107,12 @@
                     <connections>
                         <outlet property="answerToggle" destination="aEb-Cn-953" id="WA4-f8-yA7"/>
                         <outlet property="backLabel" destination="oOy-eA-yhS" id="Xwm-rn-X8F"/>
+                        <outlet property="cardView" destination="JWA-Io-FS9" id="4Gh-tO-1k2"/>
+                        <outlet property="correctButton" destination="gHN-0x-rX1" id="LIh-V9-m6x"/>
                         <outlet property="frontLabel" destination="TkO-fO-oN7" id="sYA-Ly-IHW"/>
+                        <outlet property="incorrectButtonOne" destination="sOX-jS-3r5" id="ru5-Nh-t1Q"/>
+                        <outlet property="incorrectButtonThree" destination="bs8-8b-XQF" id="GFU-Lb-Rqv"/>
+                        <outlet property="incorrectButtonTwo" destination="iQH-DI-uZa" id="BwX-KE-Kez"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
