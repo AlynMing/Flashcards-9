@@ -15,14 +15,19 @@ class ViewController: UIViewController {
     @IBOutlet weak var incorrectButtonOne: UIButton!
     @IBOutlet weak var correctButton: UIButton!
     @IBOutlet weak var cardView: UIView!
-    var cardHidden = true;
     @IBOutlet weak var backLabel: UILabel!
     @IBOutlet weak var frontLabel: UILabel!
-    @IBOutlet weak var answerToggle: UISwitch!
+    @IBOutlet weak var nextButton: UIButton!
+    @IBOutlet weak var prevButton: UIButton!
+    var currentIndex: Int = 0
+    var flashcards = [FlashCard]()
+    var isHidden:Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        readSavedFlashCards()
         setUpView()
-        updateUI()
+        
     }
     
     func setUpView(){
@@ -46,6 +51,26 @@ class ViewController: UIViewController {
         incorrectButtonTwo.clipsToBounds = true
         incorrectButtonThree.clipsToBounds = true
         correctButton.clipsToBounds = true
+        if currentIndex == flashcards.count-1 || flashcards.count == 0{
+                       nextButton.isEnabled = false
+                   }
+                   else {
+                       nextButton.isEnabled = true
+                   }
+                   
+                   if currentIndex == 0 {
+                       prevButton.isEnabled = false
+                   }
+                   else {
+                       prevButton.isEnabled = true
+                   }
+        if flashcards.count == 0 {
+            flashcards.append(FlashCard(question: "My Question", answer1: "My Answer", answer2: " ", answer3: " ", answer4: " "))
+        }
+        else {
+    updateLabels(flashCard: flashcards[0])
+        }
+            
     }
     
     
@@ -56,7 +81,6 @@ class ViewController: UIViewController {
          - Make other options unclickable
          */
         
-        answerToggle.isHidden = false
         incorrectButtonOne.layer.borderColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
         incorrectButtonTwo.layer.borderColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
         incorrectButtonThree.layer.borderColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
@@ -64,39 +88,36 @@ class ViewController: UIViewController {
         incorrectButtonOne.alpha = 0.5
         incorrectButtonTwo.alpha = 0.5
         incorrectButtonThree.alpha = 0.5
-        updateCard()
-        updateUI()
 
     }
     
-    
-    @IBAction func didToggle(_ sender: UISwitch) {
-        if sender.isOn {
-            cardHidden = true
-        }
-        else {
-            cardHidden = false
-        }
-        updateUI()
-    }
-    
     @IBAction func didTapOnFlash(_ sender: Any) {
-       answerToggle.isHidden = false
-       updateCard()
-       updateUI()
+        isHidden = !isHidden
+        backLabel.isHidden = isHidden
     }
-    func updateUI(){
-        backLabel.isHidden = cardHidden
-        answerToggle.setOn(cardHidden, animated: true)
-    }
-    
+  
     func updateCard(){
-        if cardHidden {
-                   cardHidden = false
-               }
-               else {
-                   cardHidden = true
-               }
+        correctButton.layer.borderColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        incorrectButtonTwo.layer.borderColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        incorrectButtonOne.layer.borderColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        incorrectButtonThree.layer.borderColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        incorrectButtonOne.alpha = 1
+        incorrectButtonTwo.alpha = 1
+        incorrectButtonThree.alpha = 1
+        
+        if currentIndex == flashcards.count-1 || flashcards.count == 0{
+                       nextButton.isEnabled = false
+                   }
+                   else {
+                       nextButton.isEnabled = true
+                   }
+                   
+                   if currentIndex == 0 {
+                       prevButton.isEnabled = false
+                   }
+                   else {
+                       prevButton.isEnabled = true
+                   }
     }
     
     
@@ -108,48 +129,101 @@ class ViewController: UIViewController {
         
         creationController.flashCardController = self
         if segue.identifier == "edit" {
+        creationController.isEdit = true
         creationController.initialQuestion = frontLabel.text
         creationController.initialAnswer = backLabel.text
+        creationController.extraAnswerText1 = incorrectButtonOne.currentTitle
+        creationController.extraAnswerText2 =
+            incorrectButtonTwo.currentTitle
+        creationController.extraAnswerText3 =
+            incorrectButtonThree.currentTitle
         }
+        
+        if segue.identifier == "new"{
+            creationController.isEdit = false
+        }
+       
         
         
     }
+    @IBAction func didTapOnDelete(_ sender: UIButton) {
+        let alert = UIAlertController(title: "Delete FlashCard?", message: "Are you sure you want to delete this flashcard", preferredStyle: .actionSheet)
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (action) in
+            self.deleteCurrentFlashCard()
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+
+
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true)
+        
+    }
     
-    func updateFlashCard(question: String, answer:String, extraAnswer1:String, extraAnswer2: String, extraAnswer3:String){
-           frontLabel.text = question
-           backLabel.text = answer
-            
+    func deleteCurrentFlashCard(){
+        flashcards.remove(at: currentIndex)
+        
+        if currentIndex > flashcards.count-1 {
+            currentIndex = flashcards.count-1
+        }
+        if currentIndex == -1 {
+            flashcards.append(FlashCard(question: "Add a Card", answer1: "Or Edit this One", answer2: "", answer3: "", answer4: ""))
+            currentIndex = 0
+        }
+        saveAllFlashcardsToDisk()
+        updateLabels(flashCard: flashcards[currentIndex])
+    }
     
-        correctButton.setTitle(answer, for: .normal)
-        incorrectButtonOne.setTitle(extraAnswer1, for: .normal)
-        incorrectButtonTwo.setTitle(extraAnswer2, for: .normal)
-        incorrectButtonThree.setTitle(extraAnswer3, for: .normal)
-        correctButton.layer.borderColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        incorrectButtonTwo.layer.borderColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        incorrectButtonOne.layer.borderColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        incorrectButtonThree.layer.borderColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        incorrectButtonOne.alpha = 1
-        incorrectButtonTwo.alpha = 1
-        incorrectButtonThree.alpha = 1
+    
+    @IBAction func updateNextPrevButton(_ sender: UIButton) {
+        if(sender.currentTitle == "Next"){
+            currentIndex = currentIndex + 1
+        }
+        else
+        if (sender.currentTitle == "Prev"){
+            currentIndex = currentIndex - 1
+        }
+       
+        updateLabels(flashCard: flashcards[currentIndex])
+    }
+    
+    func updateLabels(flashCard:FlashCard){
         
-        if extraAnswer1 == nil || extraAnswer1 == "" {
-            incorrectButtonOne.isHidden = true
-        }
-            
-        if extraAnswer2 == nil || extraAnswer2 == ""{
-            incorrectButtonTwo.isHidden = true
-        }
+        frontLabel.text = flashCard.Question
+        backLabel.text = flashCard.Answer1
         
-        if extraAnswer3 == nil || extraAnswer3 == "" {
-            incorrectButtonThree.isHidden = true
-        }
+           
+
+        correctButton.setTitle(flashCard.Answer1, for: .normal)
+        incorrectButtonOne.setTitle(flashCard.Answer2, for: .normal)
+        incorrectButtonTwo.setTitle(flashCard.Answer3, for: .normal)
+        incorrectButtonThree.setTitle(flashCard.Answer4, for: .normal)
         
-        if incorrectButtonOne.isHidden && incorrectButtonTwo.isHidden && incorrectButtonThree.isHidden {
-            correctButton.isHidden = true
-        }
+        updateCard()
+       
+       
         
         
        }
     
+    func saveAllFlashcardsToDisk() {
+        
+        let dictionaryArray = flashcards.map { (card) ->[String:String] in
+            return ["Question": card.Question, "Answer": card.Answer1, "ExtraAnswer1": card.Answer2!, "ExtraAnswer2": card.Answer3!, "ExtraAnswer3": card.Answer4!]
+        }
+     
+        UserDefaults.standard.set(dictionaryArray, forKey: "flashcards")
+    }
+    
+    func readSavedFlashCards() {
+        if let  dictionaryArray = UserDefaults.standard.array(forKey: "flashcards") as? [[String:String]]{
+            
+            let savedCards = dictionaryArray.map { dictionary  -> FlashCard in
+                return FlashCard(question: dictionary["Question"]!, answer1: dictionary["Answer"]!, answer2: dictionary["ExtraAnswer1"], answer3: dictionary["ExtraAnswer2"], answer4: dictionary["ExtraAnswer3"])
+            }
+            flashcards.append(contentsOf: savedCards)
+        }
+    
+    }
 }
-
