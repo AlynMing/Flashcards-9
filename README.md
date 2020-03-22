@@ -1,22 +1,23 @@
 ## Flashcards
 
-## Lab 3
+## Lab 4
 
 ### App Description
-`TODO://` Allows you to add, edit, delete, and save flashcards 
+Allows Users to Add and Edit Flashcards
 
 ### App Walk-though
-`TODO://` Add the URL to your animated app walk-though `gif` in the image tag below. Make sure the gif actually renders and animates when viewing this README. (☝️ Remove this paragraph after after adding gif)
 
-<img src="https://recordit.co/RbLkEcwPfX.gif" width=200><br>
-
+<img src="https://recordit.co/G7sLlI8X1B.gif" width=200><br>
 
 
 ## Required
-- [x] User can browse through multiple flashcards
-- [x] User can re-open the app and see previously created flashcards
+- [x] User should see the app icon 
+- [x] User should see a splash screen
+- [x] User should see an flip animation when revealing the answer
+- [x] User should see a slide animation when going to the next flashcard
+- [x] User should see a slide animation when going to the previous flashcard
 - [x] Push code to GitHub
 ## Optional
-- [x] User can delete a flashcard
-- [x] User can edit existing flashcard
-- [x] User can store multiple choice questions
+- [x] User should see a nicer flashcard with rounded corners, shadows, and animating when showing the first time
+- [x] User should see all views properly layout when using the app on a phone of different sizes
+- [x] Correct answer in multiple choice should be random

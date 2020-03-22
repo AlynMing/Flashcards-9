@@ -14,10 +14,6 @@
 
 import Foundation
 
-protocol  FlashCardDelegate {
-    func  updateCard()
-    
-}
 
 struct FlashCard {
     
@@ -27,7 +23,6 @@ struct FlashCard {
     var Answer3: String?
     var Answer4: String?
 
-    var delegate: FlashCardDelegate?
     
   init(question: String, answer1:String, answer2: String?, answer3: String?, answer4: String?){
              self.Question = question
